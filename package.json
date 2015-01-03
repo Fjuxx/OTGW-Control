@@ -1,0 +1,25 @@
+{
+  "name": "OTGW-Control",
+  "version": "0.0.1",
+  "description": "Control the OTGW-Gateway with node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fjuxx/OTGW-Control.git"
+  },
+  "keywords": [
+    "otgw",
+    "gateway",
+    "control",
+    "Opentherm"
+  ],
+  "author": "Nick van Alst",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fjuxx/OTGW-Control/issues"
+  },
+  "homepage": "https://github.com/Fjuxx/OTGW-Control"
+}
