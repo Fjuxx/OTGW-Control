@@ -133,7 +133,8 @@ OTGateway.prototype.onData = function (data) {
                                 }
                         }
                 }
-        } else if (opentherm_target == "T" && (opentherm_type == "T" || opentherm_type == "C")) {
+        } 
+        if (opentherm_target == "T" && (opentherm_type == "T" || opentherm_type == "C")) {
           this.emit('response',line);
         }
 
