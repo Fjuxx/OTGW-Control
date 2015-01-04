@@ -133,7 +133,10 @@ OTGateway.prototype.onData = function (data) {
                                 }
                         }
                 }
+        } else if (opentherm_target == "T" && (opentherm_type == "T" || opentherm_type == "C")) {
+          this.emit('response',line);
         }
+
     }
   }.bind(this));
 
@@ -141,53 +144,28 @@ OTGateway.prototype.onData = function (data) {
 };
 
 //NOT functional atm
-OTGateway.prototype.setTemperature = function (rfAdress, mode, temperature, callback) {
-  return;
-  var reqTempHex, reqTempBinary, reqRoomHex;
+OTGateway.prototype.setTemperature = function (mode, temperature, callback) {
+
   if (!this.isConnected) {
     callback(new Error("Not connected"));
     return;
   }
 
-  // 00 = Auto weekprog (no temp is needed, just make the whole byte 00)
-  // 01 = Permanent
-  // 10 = Temporarily
-  var modeBin;
+  var data;
   switch (mode) {
     case 'auto':
-      modeBin = '00';
+      data = 'TT=00';
       break;
     case 'manu':
-      modeBin = '01';
+      data = 'TT=' + temperature;
       break;
     case 'boost':
-      modeBin = '11';
+      data = 'TC=' + temperature;
       break;
     default:
       callback(new Error('Unknown mode: ' + mode));
       return false;
   }
-
-  var device = this.devices[rfAdress];
-  if(!device) {
-    callback(new Error("Could not find a device with this rfAdress!"));
-    return;
-  }
-  var roomId = device.roomId; 
-
-  
-  reqRoomHex = padLeft(roomId.toString(16), 2);
-
-  if(mode == 'auto' && (typeof temperature === "undefined" || temperature === null)) {
-    reqTempHex = '00';
-  } else {
-    reqTempBinary = modeBin + ("000000" + (temperature * 2).toString(2)).substr(-6);
-    reqTempHex = parseInt(reqTempBinary, 2).toString(16);    
-  }
-
-
-  var payload = new Buffer('000440000000' + rfAdress + reqRoomHex + reqTempHex, 'hex').toString('base64');
-  var data = 's:' + payload + '\r\n';
 
   this.send(data, function(err) {
       if(err && callback) { 
@@ -200,18 +178,37 @@ OTGateway.prototype.setTemperature = function (rfAdress, mode, temperature, call
     if(!callback) {
       return;
     }
-    if(res.accepted) {
-      callback(null);
-    } else {
+    if(res == "NG" || res == "SE" || res == "BV" || res == "OR" || res == "NS" || res == "NF" || res == "OE") {
       var reason = "";
-      if(res.free_memory_slots === 0) {
-        reason = ": Too many commands send, the cube has no memoery slots left.";
+      switch(res) {
+        case "NG":
+          reason = "No Good: The command code is unknown.";
+          break;
+        case "SE":
+          reason = "Syntax Error: The command contained an unexpected character or was incomplete.";
+          break;
+        case "BV":
+          reason = "Bad Value: The command contained a data value that is not allowed.";
+          break;
+        case "OR":
+          reason = "Out of Range: A number was specified outside of the allowed range.";
+          break;
+        case "NS":
+          reason = "No Space: The alternative Data-ID could not be added because the table is full.";
+          break;
+        case "NF":
+          reason = "Not Found: The specified alternative Data-ID could not be removed because it does not exist in the table.";
+          break; 
+        case "OE":
+          reason = "Overrun Error: The processor was busy and failed to process all received characters.";
+          break;
       }
-      callback(new Error('Command was rejected' + reason));
+      callback(new Error('Command was rejected, Reason: ' + reason));
+    } else {
+      callback(null);
     }
     callback = null;
   });
-
 };
 
 module.exports = OTGateway;
