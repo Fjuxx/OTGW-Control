@@ -143,8 +143,8 @@ OTGateway.prototype.onData = function (data) {
                                  //console.log(String((topic + message) (previous[topic] + previous[message])));
                                 if ((message) != (previous[opentherm_id])) {
                                         this.emit(topic, String(message));
-                                        previous[topic] = topic;
-                                        previous[message] = message;
+                                       // previous[topic] = topic;
+                                        previous[opentherm_id] = message;
                                 }
                         }
                 }
