@@ -3,7 +3,22 @@ var net = require('net');
 var util = require('util');
 
 var topic, message;
-var previous = [];
+var previous = {
+        0: "",
+        1: "",
+        9: "",
+        16: "",
+        24: "",
+        25: "",
+        26: "",
+        28: "",
+        116: "",
+        117: "",
+        119: "",
+        120: "",
+        121: "",
+        123: ""
+};
 
 var opentherm_ids = {
         0: "flame_status",
@@ -46,6 +61,7 @@ function padLeft(nr, n, str){
 }
 
 function OTGateway(ip, port) {
+
   this.ip = ip;
   this.port = port;
   this.interval = 60000;
@@ -125,16 +141,16 @@ OTGateway.prototype.onData = function (data) {
                                  //console.log(String(previous[topic] + previous[message]));
                                  //console.log(String(topic+message));
                                  //console.log(String((topic + message) (previous[topic] + previous[message])));
-                                if ((topic + message) != (previous[topic] + previous[message])) {
+                                if ((message) != (previous[opentherm_id])) {
                                         this.emit(topic, String(message));
                                         previous[topic] = topic;
                                         previous[message] = message;
                                 }
                         }
                 }
-        } //15:12:42.394368  T00090000  Read-Data   Remote override room setpoint: 0.00
+        } //15:12:42.394368  AC0090000  Read-Data   Remote override room setpoint: 0.00
 
-        if (opentherm_target == "T" && (opentherm_type == "T" || opentherm_type == "C")) {
+        if ((opentherm_target == "T" && (opentherm_type == "T" || opentherm_type == "C")) || line == "NG" || line == "SE" || line == "BV" || line == "OR" || line == "NS" || line == "NF" || line == "OE") {
           this.emit('response',line);
         }
 
