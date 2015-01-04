@@ -48,7 +48,7 @@ function padLeft(nr, n, str){
 function OTGateway(ip, port) {
   this.ip = ip;
   this.port = port;
-  this.interval = 20000;
+  this.interval = 60000;
   this.isConnected = false;
   this.busy = false;
   this.callback = null;
@@ -77,9 +77,8 @@ OTGateway.prototype.connect = function () {
       this.emit('connected');
     }.bind(this));
   } else {
-    this.send('l:\r\n');
+   // this.send('l:\r\n');
   }
-
   setTimeout(this.connect.bind(this), this.interval);
 };
 
