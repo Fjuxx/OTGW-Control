@@ -102,10 +102,10 @@ OTGateway.prototype.onData = function (data) {
         opentherm_id = parseInt(line.slice(3, 5), 16); //
         opentherm_payload = line.slice(-4); // last 4 chars
 
-        //if (opentherm_target == "B" || opentherm_target == "T" || opentherm_target == "A" || opentherm_target == "R" || opentherm_target == "E") {
-        if (opentherm_target == "B" || opentherm_target == "T" || opentherm_target == "A") {
-                // if (opentherm_type == "1" || opentherm_type == "4" || opentherm_type == "C" || opentherm_type == "9") {
-                if (opentherm_type == "1" || opentherm_type == "4") {
+        if (opentherm_target == "B" || opentherm_target == "T" || opentherm_target == "A" || opentherm_target == "R" || opentherm_target == "E") {
+        //if (opentherm_target == "B" || opentherm_target == "T" || opentherm_target == "A") {
+                if (opentherm_type == "1" || opentherm_type == "4" || opentherm_type == "C" || opentherm_type == "9") {
+                //if (opentherm_type == "1" || opentherm_type == "4") {
                         if (opentherm_id in opentherm_ids) {
                                 topic = opentherm_ids[opentherm_id];
                                 switch (opentherm_ids_types[opentherm_id]) {
@@ -132,7 +132,8 @@ OTGateway.prototype.onData = function (data) {
                                 }
                         }
                 }
-        } 
+        } //15:12:42.394368  T00090000  Read-Data   Remote override room setpoint: 0.00
+
         if (opentherm_target == "T" && (opentherm_type == "T" || opentherm_type == "C")) {
           this.emit('response',line);
         }
