@@ -86,7 +86,7 @@ OTGateway.prototype.send = function (message, callback) {
   if (!this.busy) {
     //console.log('Sending command: ' + message.substr(0,1));
     this.busy = true;
-    this.client.write(message, 'utf-8', callback);
+    this.client.write(message + '\r\n', 'utf-8', callback);
   }
 };
 
