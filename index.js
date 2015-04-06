@@ -127,6 +127,9 @@ OTGateway.prototype.onData = function (data) {
                                 switch (opentherm_ids_types[opentherm_id]) {
                                         case 'flag8':
                                                 message = parseInt(opentherm_payload, 16).toString(2);
+                                                for (var i = 15 - message.length; i >= 0; i--) {
+                                                  message = "0" + message;
+                                                };
                                                 break;
 
                                         case 'f8.8':
